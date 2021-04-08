@@ -1,0 +1,5 @@
+spring:
+  kafka:
+    bootstrap-servers: docker-desktop:32062
+    consumer:
+      client-id: spring-consumer
