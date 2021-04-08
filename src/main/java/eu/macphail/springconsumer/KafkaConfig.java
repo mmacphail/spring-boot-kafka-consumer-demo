@@ -18,6 +18,22 @@ import java.util.Map;
 @Configuration
 @EnableKafka
 public class KafkaConfig {
+
+    @Value("${spring.kafka.bootstrap-servers}")
+    private String kafkaBootstrapUrl;
+
+    @Value("${spring.kafka.consumer.client-id}")
+    private String clientID;
+
+    @Value("${spring.kafka.consumer.fetch-min-size}")
+    private int fetchMinBytes;
+
+    @Value("${spring.kafka.consumer.fetch-max-wait}")
+    private int fetchMaxWait;
+
+    @Value("${spring.kafka.consumer.max-poll-records}")
+    private int maxPollRecords;
+
     @Bean(name = "batchFactory")
     KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, String>>
     kafkaListenerContainerFactory() {
@@ -33,16 +49,8 @@ public class KafkaConfig {
 
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
-        DefaultKafkaConsumerFactory<String, String> consumerFactory = new DefaultKafkaConsumerFactory<>(consumerConfigs());
-
-        return consumerFactory;
+        return new DefaultKafkaConsumerFactory<>(consumerConfigs());
     }
-
-    @Value("${spring.kafka.bootstrap-servers}")
-    private String kafkaBootstrapUrl;
-
-    @Value("${spring.kafka.consumer.client-id}")
-    private String clientID;
 
     @Bean
     public Map<String, Object> consumerConfigs() {
@@ -52,6 +60,9 @@ public class KafkaConfig {
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.CLIENT_ID_CONFIG, clientID);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        props.put(ConsumerConfig.FETCH_MIN_BYTES_CONFIG, fetchMinBytes);
+        props.put(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG, fetchMaxWait);
+        props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, maxPollRecords);
         return props;
     }
 }

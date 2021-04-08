@@ -3,3 +3,6 @@ spring:
     bootstrap-servers: docker-desktop:32062
     consumer:
       client-id: spring-consumer
+      fetch-min-size: 100000
+      fetch-max-wait: 200
+      max-poll-records: 1000
